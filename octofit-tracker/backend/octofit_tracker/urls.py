@@ -37,8 +37,16 @@ def api_root(request):
         'workouts': request.build_absolute_uri('/workouts/'),
     })
 
+import os
+
+# Get codespace name from environment variable
+codespace_name = os.environ.get('CODESPACE_NAME', '')
+
+api_base_url = f"https://{codespace_name}-8000.app.github.dev/api/" if codespace_name else "/api/"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Use api_base_url for REST endpoints
+    path(api_base_url, include(router.urls)),
     path('', api_root, name='api_root'),
-    path('', include(router.urls)),
 ]
